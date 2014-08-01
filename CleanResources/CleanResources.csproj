@@ -43,7 +43,7 @@
       <Private>True</Private>
     </Reference>
     <Reference Include="GamePlugin.core">
-      <HintPath>D:\honourbound\trunk\Game\Plugins\GamePlugin.core.dll</HintPath>
+      <HintPath>..\libs\GamePlugin.core.dll</HintPath>
     </Reference>
     <Reference Include="Ionic.Zip">
       <HintPath>..\packages\Duality.0.1.170\lib\net40\Ionic.Zip.dll</HintPath>

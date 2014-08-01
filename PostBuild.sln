@@ -1,11 +1,11 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 2013
-VisualStudioVersion = 12.0.30110.0
-MinimumVisualStudioVersion = 10.0.40219.1
+# Visual Studio 2012
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OptimizePixmaps", "OptimizePixmaps\OptimizePixmaps.csproj", "{66765AFB-14C7-4CCF-A920-868317BBC16A}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OptimizePixmaps.Tests", "OptimizePixmaps.Tests\OptimizePixmaps.Tests.csproj", "{09EC4552-ACB9-470D-9D9C-054684D2375A}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CleanResources", "CleanResources\CleanResources.csproj", "{55CD07F1-E8E8-49D4-AF12-9EF5023A4266}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -21,6 +21,10 @@ Global
 		{09EC4552-ACB9-470D-9D9C-054684D2375A}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{09EC4552-ACB9-470D-9D9C-054684D2375A}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{09EC4552-ACB9-470D-9D9C-054684D2375A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{55CD07F1-E8E8-49D4-AF12-9EF5023A4266}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{55CD07F1-E8E8-49D4-AF12-9EF5023A4266}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{55CD07F1-E8E8-49D4-AF12-9EF5023A4266}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{55CD07F1-E8E8-49D4-AF12-9EF5023A4266}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
