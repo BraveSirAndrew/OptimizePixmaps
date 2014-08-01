@@ -46,7 +46,7 @@ namespace CleanResources
 			if (!File.Exists(pluginPath))
 			{
 				Console.WriteLine("Can't find Core Plugin, abort resource clean up");
-				throw new DllNotFoundException(string.Format("{0} not found, cant reset resources",pluginPath));
+				throw new ArgumentException(string.Format("{0} not found, cant reset resources",pluginPath));
 			}
 
 			if (args.RequestingAssembly.FullName.ToLower().Contains(coreDll))
