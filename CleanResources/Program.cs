@@ -28,6 +28,7 @@ namespace CleanResources
 				Console.WriteLine("The directory {0} does not exist, can't reset leaderboars and tutorials",_pathToGame);
 				return;
 			}
+			
 			AppDomain.CurrentDomain.AssemblyResolve += CurrentDomainOnAssemblyResolve;
 			
 			Console.WriteLine("Succesfully loaded CorePluggin");
@@ -39,8 +40,10 @@ namespace CleanResources
 			
 		}
 
+
 		private static Assembly CurrentDomainOnAssemblyResolve(object sender, ResolveEventArgs args)
 		{
+			
 			const string coreDll = "gameplugin.core";
 			var pluginPath = Path.Combine(_pathToGame, "plugins", coreDll + ".dll");
 			if (!File.Exists(pluginPath))
@@ -49,12 +52,7 @@ namespace CleanResources
 				throw new ArgumentException(string.Format("{0} not found, cant reset resources",pluginPath));
 			}
 
-			if (args.RequestingAssembly.FullName.ToLower().Contains(coreDll))
-			{
-				return Assembly.LoadFile(pluginPath);
-			}
-			return null;
-
+			return args.Name.ToLower().Contains(coreDll) ? Assembly.LoadFile(pluginPath) : null;
 		}
 
 
