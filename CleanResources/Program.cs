@@ -114,5 +114,6 @@ namespace CleanResources
 			}
 			return content;
 		}
+
 	}
 }
