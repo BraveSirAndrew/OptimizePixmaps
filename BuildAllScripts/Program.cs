@@ -1,6 +1,6 @@
 ﻿using System;
+using System.IO;
 using Duality;
-using ScriptingPlugin.Resources;
 
 namespace BuildAllScripts
 {
@@ -8,58 +8,37 @@ namespace BuildAllScripts
 	{
 		static void Main(string[] args)
 		{
-			const string folderPath = "Data\\Scripts";
-			var scriptResources = Resource.GetResourceFiles(folderPath);
-		
-			Fuck.Fucjk(scriptResources.ToArray());
-		}
-	}
-
-	public class Fuck
-	{
-		public static void Fucjk(string[] scripts)
-		{
-			Console.WriteLine("Optimizing pixmaps...");
-			if (scripts == null || scripts.Length == 0)
+			const string scriptsRelativePath = "Data\\Scripts";
+			string gamePath = null;
+			if (args.Length > 0)
+				gamePath = args[0];
+			if (string.IsNullOrWhiteSpace(gamePath))
 			{
-				Console.WriteLine("Found 0 pixmaps.");
-				Console.WriteLine("Finished.");
+				Console.WriteLine(@"Please include the game path as an argument to this program like BuildAllScripts.exe c:\path\to\game");
 				return;
 			}
+			if (!Directory.Exists(gamePath))
+			{
+				Console.WriteLine("Directory {0} does not exists. Can't compile scripts", gamePath);
+				return;
+			}
+			var scriptsCompletePath = Path.Combine(gamePath, scriptsRelativePath);
+			if (!Directory.Exists(scriptsCompletePath))
+			{
+				Console.WriteLine("Scripts resources Directory {0} does not exists. Can't compile scripts", scriptsCompletePath);
+				return;
+			}
+
 			try
 			{
+				var scriptResources = Resource.GetResourceFiles(scriptsCompletePath);
 
-				foreach (var scriptPath in scripts)
-				{
-					if (scriptPath.EndsWith("Script.res", StringComparison.CurrentCultureIgnoreCase) == false)
-						continue;
-					
-
-					if (scriptPath.EndsWith("FSharpScript.res"))
-					{
-						var scriptResource = ContentProvider.RequestContent<FSharpScript>(scriptPath);
-						if (scriptResource == null || scriptResource.Res == null)
-							continue;
-//						scriptResource.Res.Script
-//						scriptResource.Res.SourcePath
-
-					}
-					if (scriptPath.EndsWith("CSharpScript.res"))
-					{
-						var scriptResource = ContentProvider.RequestContent<CSharpScript>(scriptPath);
-
-					}
-					
-
-
-				}
+				ScriptResourcesBuilder.BuildAllScripts(scriptResources.ToArray(), gamePath);
 			}
 			catch (Exception exception)
 			{
 				Console.WriteLine("An error ocurred: {0} {1} {2}", exception.Message, Environment.NewLine, exception.StackTrace);
 			}
-			Console.WriteLine("Finished building scripts");
-
 		}
 	}
 }
