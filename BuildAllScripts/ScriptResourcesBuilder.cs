@@ -22,6 +22,8 @@ namespace BuildAllScripts
 			}
 
 			var resultingAssemblyDirectory = Path.Combine(gamePath, "Scripts");
+			DeleteDirectoryContents(resultingAssemblyDirectory, false);
+
 			var cSharpResults = ScriptCompiler<CSharpScript, CSharpScriptCompiler>(scripts, gamePath, "CSharpScript.res", resultingAssemblyDirectory);
 			if (cSharpResults.Errors.Any())
 			{
@@ -36,6 +38,31 @@ namespace BuildAllScripts
 			}
 
 			Console.WriteLine("Finished building scripts");
+		}
+
+	
+
+		private static void DeleteDirectoryContents(string targetPath, bool deleteRoot = true)
+		{
+			if (!Directory.Exists(targetPath))
+				return;
+			string[] files = Directory.GetFiles(targetPath);
+			string[] dirs = Directory.GetDirectories(targetPath);
+
+			foreach (string file in files)
+			{
+				File.SetAttributes(file, FileAttributes.Normal);
+				File.Delete(file);
+				Console.Write("Deleted file {0}", file);
+			}
+
+			foreach (string dir in dirs)
+			{
+				DeleteDirectoryContents(dir);
+				Console.Write("Deleted directory {0}",dir);
+			}
+			if (deleteRoot)
+				Directory.Delete(targetPath, false);
 		}
 
 		private static IScriptCompilerResults ScriptCompiler<TResource, TCompiler>(IEnumerable<string> scripts, string gamePath, string extension, string resultingAssemblyDirectory)
