@@ -1,16 +1,18 @@
 using System;
 using System.Collections.Generic;
+using System.Drawing;
 using System.IO;
 using System.Linq;
+using System.Xml.Linq;
 using Duality;
 using ScriptingPlugin;
 using ScriptingPlugin.Resources;
 
 namespace BuildAllScripts
 {
-	public class ScriptResourcesBuilder
+	public  class ScriptResourcesBuilder
 	{
-		public static void BuildAllScripts(string[] scripts, string gamePath)
+		public void BuildAllScripts(string[] scripts, string gamePath)
 		{
 			Console.WriteLine("Compiling all scripts...");
 
@@ -42,7 +44,7 @@ namespace BuildAllScripts
 
 	
 
-		private static void DeleteDirectoryContents(string targetPath, bool deleteRoot = true)
+		private void DeleteDirectoryContents(string targetPath, bool deleteRoot = true)
 		{
 			if (!Directory.Exists(targetPath))
 				return;
@@ -65,7 +67,7 @@ namespace BuildAllScripts
 				Directory.Delete(targetPath, false);
 		}
 
-		private static IScriptCompilerResults ScriptCompiler<TResource, TCompiler>(IEnumerable<string> scripts, string gamePath, string extension, string resultingAssemblyDirectory)
+		private  IScriptCompilerResults ScriptCompiler<TResource, TCompiler>(IEnumerable<string> scripts, string gamePath, string extension, string resultingAssemblyDirectory)
 			where TResource : ScriptResourceBase
 			where TCompiler : IScriptCompiler, new()
 		{
@@ -91,7 +93,7 @@ namespace BuildAllScripts
 
 		}
 
-		private static IScriptCompiler CreateCompilerWithReferences<T>(string gamePath) where T : IScriptCompiler, new()
+		private IScriptCompiler CreateCompilerWithReferences<T>(string gamePath) where T : IScriptCompiler, new()
 		{
 			var scriptCompiler = new T();
 			var di = new DirectoryInfo(gamePath);
@@ -114,7 +116,8 @@ namespace BuildAllScripts
 
 			foreach (FileInfo fileInfo in references)
 				scriptCompiler.AddReference(fileInfo.FullName);
-
+			var b = new Bitmap(1,1);
+			var ssse = new XDocument();
 			var referenceAssembliesFile = Path.Combine(gamePath, "ScriptReferences.txt");
 			if (File.Exists(referenceAssembliesFile))
 			{

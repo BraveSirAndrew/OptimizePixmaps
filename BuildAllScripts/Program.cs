@@ -1,28 +1,35 @@
 ﻿using System;
 using System.IO;
+using System.Reflection;
 using Duality;
 
 namespace BuildAllScripts
 {
 	class Program
 	{
+		private static string _gamePath;
+
 		static void Main(string[] args)
 		{
+			Console.WriteLine("test");
+			Console.ReadLine();
+			AppDomain.CurrentDomain.AssemblyResolve += CurrentDomainOnAssemblyResolve;
 			const string scriptsRelativePath = "Data\\Scripts";
-			string gamePath = null;
+			
+			_gamePath = null;
 			if (args.Length > 0)
-				gamePath = args[0];
-			if (string.IsNullOrWhiteSpace(gamePath))
+				_gamePath = args[0];
+			if (string.IsNullOrWhiteSpace(_gamePath))
 			{
 				Console.WriteLine(@"Please include the game path as an argument to this program like BuildAllScripts.exe c:\path\to\game");
 				return;
 			}
-			if (!Directory.Exists(gamePath))
+			if (!Directory.Exists(_gamePath))
 			{
-				Console.WriteLine("Directory {0} does not exists. Can't compile scripts", gamePath);
+				Console.WriteLine("Directory {0} does not exists. Can't compile scripts", _gamePath);
 				return;
 			}
-			var scriptsCompletePath = Path.Combine(gamePath, scriptsRelativePath);
+			var scriptsCompletePath = Path.Combine(_gamePath, scriptsRelativePath);
 			if (!Directory.Exists(scriptsCompletePath))
 			{
 				Console.WriteLine("Scripts resources Directory {0} does not exists. Can't compile scripts", scriptsCompletePath);
@@ -33,12 +40,33 @@ namespace BuildAllScripts
 			{
 				var scriptResources = Resource.GetResourceFiles(scriptsCompletePath);
 
-				ScriptResourcesBuilder.BuildAllScripts(scriptResources.ToArray(), gamePath);
+				var type = Type.GetType("BuildAllScripts.ScriptResourcesBuilder");
+				var scriptResourceBuilder = Activator.CreateInstance(type);
+				if (type != null)
+				{
+					var methodInfo = type.GetMethod("BuildAllScripts");
+					methodInfo.Invoke(scriptResourceBuilder, new object[] {scriptResources.ToArray(), _gamePath});
+				}
 			}
 			catch (Exception exception)
 			{
 				Console.WriteLine("An error ocurred: {0} {1} {2}", exception.Message, Environment.NewLine, exception.StackTrace);
 			}
+		}
+
+
+		private static Assembly CurrentDomainOnAssemblyResolve(object sender, ResolveEventArgs args)
+		{
+
+			const string scriptingdll = "ScriptingPlugin.core";
+			var pluginPath = Path.Combine(_gamePath, "plugins", scriptingdll + ".dll");
+			if (!File.Exists(pluginPath))
+			{
+				Console.WriteLine("Can't find Core Plugin, abort Build all scripts");
+				throw new ArgumentException(string.Format("{0} not found, cant reset resources", pluginPath));
+			}
+
+			return args.Name.ToLower().Contains(scriptingdll) ? Assembly.LoadFile(pluginPath) : null;
 		}
 	}
 }
