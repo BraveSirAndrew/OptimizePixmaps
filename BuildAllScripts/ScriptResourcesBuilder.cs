@@ -18,10 +18,11 @@ namespace BuildAllScripts
 
 			if (scripts == null || scripts.Length == 0)
 			{
-				Console.WriteLine("Found 0 pixmaps.");
+				Console.WriteLine("Found 0 scripts.");
 				Console.WriteLine("Finished.");
 				return;
 			}
+			Console.WriteLine("About to start actually compiling {0} scripts.", scripts.Length);
 
 			var resultingAssemblyDirectory = Path.Combine(gamePath, "Scripts");
 			DeleteDirectoryContents(resultingAssemblyDirectory, false);
@@ -41,9 +42,7 @@ namespace BuildAllScripts
 
 			Console.WriteLine("Finished building scripts");
 		}
-
 	
-
 		private void DeleteDirectoryContents(string targetPath, bool deleteRoot = true)
 		{
 			if (!Directory.Exists(targetPath))
@@ -88,7 +87,6 @@ namespace BuildAllScripts
 			}
 			var compiler = CreateCompilerWithReferences<TCompiler>(gamePath);
 
-
 			return compiler.Compile(scriptsForCompiling, resultingAssemblyDirectory);
 
 		}
@@ -116,8 +114,7 @@ namespace BuildAllScripts
 
 			foreach (FileInfo fileInfo in references)
 				scriptCompiler.AddReference(fileInfo.FullName);
-			var b = new Bitmap(1,1);
-			var ssse = new XDocument();
+			HorribleHackToLoadGACAssembloes();
 			var referenceAssembliesFile = Path.Combine(gamePath, "ScriptReferences.txt");
 			if (File.Exists(referenceAssembliesFile))
 			{
@@ -131,6 +128,12 @@ namespace BuildAllScripts
 				}
 			}
 			return scriptCompiler;
+		}
+
+		private void HorribleHackToLoadGACAssembloes() 
+		{
+			var b = new Bitmap(1, 1);
+			var ssse = new XDocument();
 		}
 	}
 }

@@ -39,20 +39,16 @@ namespace BuildAllScripts
 			try
 			{
 				var scriptResources = Resource.GetResourceFiles(scriptsCompletePath);
-
-				var type = Type.GetType("BuildAllScripts.ScriptResourcesBuilder");
-				var scriptResourceBuilder = Activator.CreateInstance(type);
-				if (type != null)
-				{
-					var methodInfo = type.GetMethod("BuildAllScripts");
-					methodInfo.Invoke(scriptResourceBuilder, new object[] {scriptResources.ToArray(), _gamePath});
-				}
+				new ScriptResourcesBuilder().BuildAllScripts(scriptResources.ToArray(), _gamePath);
 			}
 			catch (Exception exception)
 			{
 				Console.WriteLine("An error ocurred: {0} {1} {2}", exception.Message, Environment.NewLine, exception.StackTrace);
+				Environment.ExitCode = -1;
 			}
 		}
+
+
 
 
 		private static Assembly CurrentDomainOnAssemblyResolve(object sender, ResolveEventArgs args)
