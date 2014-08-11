@@ -33,13 +33,20 @@ namespace BuildAllScripts
 				Console.WriteLine("There were errors found when compiling the scripts");
 				Console.WriteLine(string.Join(Environment.NewLine, cSharpResults.Errors));
 			}
+			else
+			{
+				Console.WriteLine("All C# scripts compiled without error");
+			}
 			var fSharpResults = ScriptCompiler<FSharpScript, FSharpScriptCompiler>(scripts, gamePath, "FSharpScript.res", resultingAssemblyDirectory);
 			if (fSharpResults.Errors.Any())
 			{
 				Console.WriteLine("There were errors found when compiling the scripts");
 				Console.WriteLine(string.Join(Environment.NewLine, fSharpResults.Errors));
 			}
-
+			else
+			{
+				Console.WriteLine("All F# scripts compiled without error");
+			}
 			Console.WriteLine("Finished building scripts");
 		}
 	
