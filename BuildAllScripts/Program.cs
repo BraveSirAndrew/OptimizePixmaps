@@ -39,7 +39,15 @@ namespace BuildAllScripts
 			try
 			{
 				var scriptResources = Resource.GetResourceFiles(scriptsCompletePath);
-				new ScriptResourcesBuilder().BuildAllScripts(scriptResources.ToArray(), _gamePath);
+				var scriptBuildingResult = new ScriptResourcesBuilder().BuildAllScripts(scriptResources.ToArray(), _gamePath);
+				if (scriptBuildingResult.Item1)
+				{
+					Console.WriteLine("Finished building scripts");
+				}
+				else
+				{
+					Environment.Exit(-1);
+				}
 			}
 			catch (Exception exception)
 			{

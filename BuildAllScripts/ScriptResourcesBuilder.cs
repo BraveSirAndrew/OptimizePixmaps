@@ -10,9 +10,10 @@ using ScriptingPlugin.Resources;
 
 namespace BuildAllScripts
 {
+	
 	public  class ScriptResourcesBuilder
 	{
-		public void BuildAllScripts(string[] scripts, string gamePath)
+		public Tuple<bool, IEnumerable<string>> BuildAllScripts(string[] scripts, string gamePath)
 		{
 			Console.WriteLine("Compiling all scripts...");
 
@@ -20,7 +21,7 @@ namespace BuildAllScripts
 			{
 				Console.WriteLine("Found 0 scripts.");
 				Console.WriteLine("Finished.");
-				return;
+				return Tuple.Create<bool,IEnumerable<string>>(false,new[]{"found 0 scripts"});
 			}
 			Console.WriteLine("About to start actually compiling {0} scripts.", scripts.Length);
 
@@ -32,22 +33,21 @@ namespace BuildAllScripts
 			{
 				Console.WriteLine("There were errors found when compiling the scripts");
 				Console.WriteLine(string.Join(Environment.NewLine, cSharpResults.Errors));
+				return Tuple.Create(false,cSharpResults.Errors);
+
 			}
-			else
-			{
-				Console.WriteLine("All C# scripts compiled without error");
-			}
+			Console.WriteLine("All C# scripts compiled without error");
 			var fSharpResults = ScriptCompiler<FSharpScript, FSharpScriptCompiler>(scripts, gamePath, "FSharpScript.res", resultingAssemblyDirectory);
 			if (fSharpResults.Errors.Any())
 			{
 				Console.WriteLine("There were errors found when compiling the scripts");
 				Console.WriteLine(string.Join(Environment.NewLine, fSharpResults.Errors));
+				return Tuple.Create(false,fSharpResults.Errors);
+
 			}
-			else
-			{
-				Console.WriteLine("All F# scripts compiled without error");
-			}
-			Console.WriteLine("Finished building scripts");
+			Console.WriteLine("All F# scripts compiled without error");
+			
+			return Tuple.Create<bool, IEnumerable<string>>(true,null);
 		}
 	
 		private void DeleteDirectoryContents(string targetPath, bool deleteRoot = true)
