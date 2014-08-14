@@ -1,6 +1,8 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 2012
+# Visual Studio 2013
+VisualStudioVersion = 12.0.30723.0
+MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OptimizePixmaps", "OptimizePixmaps\OptimizePixmaps.csproj", "{66765AFB-14C7-4CCF-A920-868317BBC16A}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OptimizePixmaps.Tests", "OptimizePixmaps.Tests\OptimizePixmaps.Tests.csproj", "{09EC4552-ACB9-470D-9D9C-054684D2375A}"
@@ -8,6 +10,10 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CleanResources", "CleanResources\CleanResources.csproj", "{55CD07F1-E8E8-49D4-AF12-9EF5023A4266}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BuildAllScripts", "BuildAllScripts\BuildAllScripts.csproj", "{DACBBEDA-9B37-4876-9EFE-09F0AAAFA53E}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UtilsAndResources", "UtilsAndResources\UtilsAndResources.csproj", "{1C5C6493-BC96-4E38-8A39-462E12AC8B41}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ConvertResourcesToBinary", "ConvertResourcesToBinary\ConvertResourcesToBinary.csproj", "{F8FD8C60-6FB1-427A-9DDA-35A2879361C5}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -31,6 +37,14 @@ Global
 		{DACBBEDA-9B37-4876-9EFE-09F0AAAFA53E}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{DACBBEDA-9B37-4876-9EFE-09F0AAAFA53E}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{DACBBEDA-9B37-4876-9EFE-09F0AAAFA53E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{1C5C6493-BC96-4E38-8A39-462E12AC8B41}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{1C5C6493-BC96-4E38-8A39-462E12AC8B41}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{1C5C6493-BC96-4E38-8A39-462E12AC8B41}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{1C5C6493-BC96-4E38-8A39-462E12AC8B41}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F8FD8C60-6FB1-427A-9DDA-35A2879361C5}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F8FD8C60-6FB1-427A-9DDA-35A2879361C5}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F8FD8C60-6FB1-427A-9DDA-35A2879361C5}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F8FD8C60-6FB1-427A-9DDA-35A2879361C5}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

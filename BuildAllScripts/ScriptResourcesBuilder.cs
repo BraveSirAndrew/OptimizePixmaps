@@ -5,6 +5,7 @@ using System.Linq;
 using Duality;
 using ScriptingPlugin;
 using ScriptingPlugin.Resources;
+using UtilsAndResources;
 
 namespace BuildAllScripts
 {
@@ -22,7 +23,7 @@ namespace BuildAllScripts
 			}
 
 			var resultingAssemblyDirectory = Path.Combine(gamePath, "Scripts");
-			DeleteDirectoryContents(resultingAssemblyDirectory, false);
+			DirectoryHelper.DeleteDirectoryContents(resultingAssemblyDirectory, false);
 
 			var cSharpResults = ScriptCompiler<CSharpScript, CSharpScriptCompiler>(scripts, gamePath, "CSharpScript.res", resultingAssemblyDirectory);
 			if (cSharpResults.Errors.Any())
@@ -42,28 +43,6 @@ namespace BuildAllScripts
 
 	
 
-		private static void DeleteDirectoryContents(string targetPath, bool deleteRoot = true)
-		{
-			if (!Directory.Exists(targetPath))
-				return;
-			string[] files = Directory.GetFiles(targetPath);
-			string[] dirs = Directory.GetDirectories(targetPath);
-
-			foreach (string file in files)
-			{
-				File.SetAttributes(file, FileAttributes.Normal);
-				File.Delete(file);
-				Console.Write("Deleted file {0}", file);
-			}
-
-			foreach (string dir in dirs)
-			{
-				DeleteDirectoryContents(dir);
-				Console.Write("Deleted directory {0}",dir);
-			}
-			if (deleteRoot)
-				Directory.Delete(targetPath, false);
-		}
 
 		private static IScriptCompilerResults ScriptCompiler<TResource, TCompiler>(IEnumerable<string> scripts, string gamePath, string extension, string resultingAssemblyDirectory)
 			where TResource : ScriptResourceBase

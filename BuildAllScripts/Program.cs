@@ -1,6 +1,7 @@
 ﻿using System;
 using System.IO;
 using Duality;
+using UtilsAndResources;
 
 namespace BuildAllScripts
 {
@@ -12,16 +13,8 @@ namespace BuildAllScripts
 			string gamePath = null;
 			if (args.Length > 0)
 				gamePath = args[0];
-			if (string.IsNullOrWhiteSpace(gamePath))
-			{
-				Console.WriteLine(@"Please include the game path as an argument to this program like BuildAllScripts.exe c:\path\to\game");
+			if(!DirectoryHelper.ExistsAndPathValid(gamePath) )
 				return;
-			}
-			if (!Directory.Exists(gamePath))
-			{
-				Console.WriteLine("Directory {0} does not exists. Can't compile scripts", gamePath);
-				return;
-			}
 			var scriptsCompletePath = Path.Combine(gamePath, scriptsRelativePath);
 			if (!Directory.Exists(scriptsCompletePath))
 			{
