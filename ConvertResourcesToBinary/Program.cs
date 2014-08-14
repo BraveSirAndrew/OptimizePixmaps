@@ -54,6 +54,7 @@ namespace ConvertResourcesToBinary
 				try
 				{
 					var res = Resource.Load<Resource>(file, null, false);
+					Console.WriteLine("Converting {0}",file);
 					res.Save(null, false);
 				}
 				catch (Exception exception)
