@@ -12,15 +12,14 @@ namespace BuildAllScripts
 
 		static void Main(string[] args)
 		{
-			Console.WriteLine("test");
-			Console.ReadLine();
+			
 			AppDomain.CurrentDomain.AssemblyResolve += CurrentDomainOnAssemblyResolve;
 			const string scriptsRelativePath = "Data\\Scripts";
 			
 			_gamePath = null;
 			if (args.Length > 0)
-				gamePath = args[0];
-			if(!DirectoryHelper.ExistsAndPathValid(gamePath) )
+				_gamePath = args[0];
+			if(!DirectoryHelper.ExistsAndPathValid(_gamePath) )
 				return;
 			var scriptsCompletePath = Path.Combine(_gamePath, scriptsRelativePath);
 			if (!Directory.Exists(scriptsCompletePath))
@@ -33,7 +32,7 @@ namespace BuildAllScripts
 			{
 				var scriptResources = Resource.GetResourceFiles(scriptsCompletePath);
 				var scriptBuildingResult = new ScriptResourcesBuilder().BuildAllScripts(scriptResources.ToArray(), _gamePath);
-				if (scriptBuildingResult.Item1)
+				if (scriptBuildingResult.Succeded)
 				{
 					Console.WriteLine("Finished building scripts");
 				}
@@ -45,7 +44,7 @@ namespace BuildAllScripts
 			catch (Exception exception)
 			{
 				Console.WriteLine("An error ocurred: {0} {1} {2}", exception.Message, Environment.NewLine, exception.StackTrace);
-				Environment.ExitCode = -1;
+				Environment.Exit(-1);
 			}
 		}
 

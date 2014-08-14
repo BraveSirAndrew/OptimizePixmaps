@@ -14,7 +14,7 @@ namespace BuildAllScripts
 	
 	public  class ScriptResourcesBuilder
 	{
-		public Tuple<bool, IEnumerable<string>> BuildAllScripts(string[] scripts, string gamePath)
+		public Results BuildAllScripts(string[] scripts, string gamePath)
 		{
 			Console.WriteLine("Compiling all scripts...");
 
@@ -22,7 +22,7 @@ namespace BuildAllScripts
 			{
 				Console.WriteLine("Found 0 scripts.");
 				Console.WriteLine("Finished.");
-				return Tuple.Create<bool,IEnumerable<string>>(false,new[]{"found 0 scripts"});
+				return new Results(false,new[]{"found 0 scripts"});
 			}
 			Console.WriteLine("About to start actually compiling {0} scripts.", scripts.Length);
 
@@ -34,7 +34,7 @@ namespace BuildAllScripts
 			{
 				Console.WriteLine("There were errors found when compiling the scripts");
 				Console.WriteLine(string.Join(Environment.NewLine, cSharpResults.Errors));
-				return Tuple.Create(false,cSharpResults.Errors);
+				return  new Results(false,cSharpResults.Errors.ToArray());
 
 			}
 			Console.WriteLine("All C# scripts compiled without error");
@@ -43,16 +43,14 @@ namespace BuildAllScripts
 			{
 				Console.WriteLine("There were errors found when compiling the scripts");
 				Console.WriteLine(string.Join(Environment.NewLine, fSharpResults.Errors));
-				return Tuple.Create(false,fSharpResults.Errors);
+				return  new Results(false,fSharpResults.Errors.ToArray());
 
 			}
 			Console.WriteLine("All F# scripts compiled without error");
 			
-			return Tuple.Create<bool, IEnumerable<string>>(true,null);
+			return  new Results(true,null);
 		}
 	
-		private void DeleteDirectoryContents(string targetPath, bool deleteRoot = true)
-
 		private  IScriptCompilerResults ScriptCompiler<TResource, TCompiler>(IEnumerable<string> scripts, string gamePath, string extension, string resultingAssemblyDirectory)
 			where TResource : ScriptResourceBase
 			where TCompiler : IScriptCompiler, new()
