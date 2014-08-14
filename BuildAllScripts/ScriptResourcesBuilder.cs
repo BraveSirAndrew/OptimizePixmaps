@@ -1,7 +1,9 @@
 using System;
 using System.Collections.Generic;
+using System.Drawing;
 using System.IO;
 using System.Linq;
+using System.Xml.Linq;
 using Duality;
 using ScriptingPlugin;
 using ScriptingPlugin.Resources;
@@ -9,18 +11,20 @@ using UtilsAndResources;
 
 namespace BuildAllScripts
 {
-	public class ScriptResourcesBuilder
+	
+	public  class ScriptResourcesBuilder
 	{
-		public static void BuildAllScripts(string[] scripts, string gamePath)
+		public Tuple<bool, IEnumerable<string>> BuildAllScripts(string[] scripts, string gamePath)
 		{
 			Console.WriteLine("Compiling all scripts...");
 
 			if (scripts == null || scripts.Length == 0)
 			{
-				Console.WriteLine("Found 0 pixmaps.");
+				Console.WriteLine("Found 0 scripts.");
 				Console.WriteLine("Finished.");
-				return;
+				return Tuple.Create<bool,IEnumerable<string>>(false,new[]{"found 0 scripts"});
 			}
+			Console.WriteLine("About to start actually compiling {0} scripts.", scripts.Length);
 
 			var resultingAssemblyDirectory = Path.Combine(gamePath, "Scripts");
 			DirectoryHelper.DeleteDirectoryContents(resultingAssemblyDirectory, false);
@@ -30,21 +34,26 @@ namespace BuildAllScripts
 			{
 				Console.WriteLine("There were errors found when compiling the scripts");
 				Console.WriteLine(string.Join(Environment.NewLine, cSharpResults.Errors));
+				return Tuple.Create(false,cSharpResults.Errors);
+
 			}
+			Console.WriteLine("All C# scripts compiled without error");
 			var fSharpResults = ScriptCompiler<FSharpScript, FSharpScriptCompiler>(scripts, gamePath, "FSharpScript.res", resultingAssemblyDirectory);
 			if (fSharpResults.Errors.Any())
 			{
 				Console.WriteLine("There were errors found when compiling the scripts");
 				Console.WriteLine(string.Join(Environment.NewLine, fSharpResults.Errors));
+				return Tuple.Create(false,fSharpResults.Errors);
+
 			}
-
-			Console.WriteLine("Finished building scripts");
+			Console.WriteLine("All F# scripts compiled without error");
+			
+			return Tuple.Create<bool, IEnumerable<string>>(true,null);
 		}
-
 	
+		private void DeleteDirectoryContents(string targetPath, bool deleteRoot = true)
 
-
-		private static IScriptCompilerResults ScriptCompiler<TResource, TCompiler>(IEnumerable<string> scripts, string gamePath, string extension, string resultingAssemblyDirectory)
+		private  IScriptCompilerResults ScriptCompiler<TResource, TCompiler>(IEnumerable<string> scripts, string gamePath, string extension, string resultingAssemblyDirectory)
 			where TResource : ScriptResourceBase
 			where TCompiler : IScriptCompiler, new()
 		{
@@ -65,12 +74,11 @@ namespace BuildAllScripts
 			}
 			var compiler = CreateCompilerWithReferences<TCompiler>(gamePath);
 
-
 			return compiler.Compile(scriptsForCompiling, resultingAssemblyDirectory);
 
 		}
 
-		private static IScriptCompiler CreateCompilerWithReferences<T>(string gamePath) where T : IScriptCompiler, new()
+		private IScriptCompiler CreateCompilerWithReferences<T>(string gamePath) where T : IScriptCompiler, new()
 		{
 			var scriptCompiler = new T();
 			var di = new DirectoryInfo(gamePath);
@@ -93,7 +101,7 @@ namespace BuildAllScripts
 
 			foreach (FileInfo fileInfo in references)
 				scriptCompiler.AddReference(fileInfo.FullName);
-
+			HorribleHackToLoadGACAssembloes();
 			var referenceAssembliesFile = Path.Combine(gamePath, "ScriptReferences.txt");
 			if (File.Exists(referenceAssembliesFile))
 			{
@@ -107,6 +115,12 @@ namespace BuildAllScripts
 				}
 			}
 			return scriptCompiler;
+		}
+
+		private void HorribleHackToLoadGACAssembloes() 
+		{
+			var b = new Bitmap(1, 1);
+			var ssse = new XDocument();
 		}
 	}
 }
