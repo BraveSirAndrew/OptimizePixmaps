@@ -53,8 +53,7 @@ namespace ConvertResourcesToBinary
 				var plugins = Directory.EnumerateFiles(Path.Combine(gamePath, "plugins"),"*.dll");
 
 				plugins = plugins.Except(new []{"spine-csharp","nvorbis"}, StringComparer.CurrentCultureIgnoreCase);
-				var references = plugins.Where(x => (!x.ToLower().Contains("fmod"))).ToList();
-			//	HorribleHackToLoadGACAssembloes();
+				var references = plugins.Where(x => !x.ToLower().Contains("fmod")).ToList();
 				foreach (var reference in references)
 				{
 					try
@@ -72,11 +71,6 @@ namespace ConvertResourcesToBinary
 				Console.WriteLine("Error: {0}.{1} {2} ",exception.Message, Environment.NewLine, exception.StackTrace);
 			}
 		}
-		private static void HorribleHackToLoadGACAssembloes()
-		{
-			var b = new Bitmap(1, 1);
-			var ssse = new XDocument();
-		}
 	
 	}
 
@@ -93,14 +87,12 @@ namespace ConvertResourcesToBinary
 				try
 				{
 					var contentRef = Resource.Load<Resource>(file,null,false);
-//					var contentRef = ContentProvider.RequestContent<Resource>(file);
-//					var contentRef = ContentProvider.RequestContent(file);
 					Console.WriteLine("Converting {0}",file);
 					contentRef.Save(null, false);
 				}
 				catch (Exception exception)
 				{
-					errors.Add(string.Format("Error:{0} {1} StackTrace: {2}", exception.Message, Environment.NewLine, exception.StackTrace));
+					errors.Add(string.Format("Error saving {0}:{1} {2} StackTrace: {3}",file, exception.Message, Environment.NewLine, exception.StackTrace));
 				}
 			}
 			return new Results {Succeded = !errors.Any(), Errors = errors.ToArray()};
