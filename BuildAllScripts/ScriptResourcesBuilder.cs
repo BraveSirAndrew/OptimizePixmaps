@@ -97,8 +97,12 @@ namespace BuildAllScripts
 											 !x.Name.ToLower().Contains("oggvorbisdotnet") &&
 											 !x.Name.ToLower().Contains("wrap_oal"))).ToList();
 
-			foreach (FileInfo fileInfo in references)
-				scriptCompiler.AddReference(fileInfo.FullName);
+            foreach (FileInfo fileInfo in references)
+            {
+                if (!(scriptCompiler is FSharpScriptCompiler && (fileInfo.Name.EndsWith("System.Runtime.dll", StringComparison.CurrentCultureIgnoreCase)
+                                                             || fileInfo.Name.EndsWith("onikira.exe", StringComparison.CurrentCultureIgnoreCase))))
+                          scriptCompiler.AddReference(fileInfo.FullName);
+            }
 			HorribleHackToLoadGACAssembloes();
 			var referenceAssembliesFile = Path.Combine(gamePath, "ScriptReferences.txt");
 			if (File.Exists(referenceAssembliesFile))
@@ -109,7 +113,8 @@ namespace BuildAllScripts
 				{
 					if (assembly.ToLower().StartsWith("plugins") || references.Any(x => assembly.ToLower().Contains(x.Name.ToLower())))
 						continue;
-					scriptCompiler.AddReference(assembly);
+                    if (!(scriptCompiler is FSharpScriptCompiler && (assembly.EndsWith("System.Runtime.dll",StringComparison.CurrentCultureIgnoreCase) || assembly.StartsWith("onikira.exe",StringComparison.CurrentCultureIgnoreCase))))
+					    scriptCompiler.AddReference(assembly);
 				}
 			}
 			return scriptCompiler;
@@ -119,6 +124,8 @@ namespace BuildAllScripts
 		{
 			var b = new Bitmap(1, 1);
 			var ssse = new XDocument();
+            IEnumerable<int> bla = new List<int>();
+            IEnumerator<object> blu ;
 		}
 	}
 }
