@@ -95,6 +95,10 @@ namespace BuildAllScripts
 											 !x.Name.ToLower().Contains("nativesquish") &&
 											 !x.Name.ToLower().Contains("communityexpresssw") &&
 											 !x.Name.ToLower().Contains("oggvorbisdotnet") &&
+											 !x.Name.ToLower().Contains("libvorbis") &&
+											 !x.Name.ToLower().Contains("libtheoraplay") &&
+											 !x.Name.ToLower().Contains("libtheora") &&
+											 !x.Name.ToLower().Contains("libogg") &&
 											 !x.Name.ToLower().Contains("wrap_oal"))).ToList();
 
             foreach (FileInfo fileInfo in references)
