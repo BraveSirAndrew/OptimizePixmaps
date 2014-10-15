@@ -55,8 +55,12 @@ namespace BuildAllScripts
 			where TResource : ScriptResourceBase
 			where TCompiler : IScriptCompiler, new()
 		{
-			var scriptsForCompiling = new List<CompilationUnit>();
-			foreach (var scriptPath in scripts)
+		    if(scripts== null || !scripts.Any())
+		        return null;
+
+		    var scriptsForCompiling = new List<CompilationUnit>();
+
+		    foreach (var scriptPath in scripts)
 			{
 				if (scriptPath.EndsWith("Script.res", StringComparison.CurrentCultureIgnoreCase) == false)
 					continue;
@@ -70,6 +74,8 @@ namespace BuildAllScripts
 					scriptsForCompiling.Add(new CompilationUnit(scriptResource.Res.Script, scriptResource.Res.SourcePath));
 				}
 			}
+            if(!scriptsForCompiling.Any())
+                return new FSharpScriptCompilerResults(new string[0],null, null);
 			var compiler = CreateCompilerWithReferences<TCompiler>(gamePath);
 
 			return compiler.Compile(scriptsForCompiling, resultingAssemblyDirectory);

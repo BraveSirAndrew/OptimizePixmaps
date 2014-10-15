@@ -31,6 +31,7 @@ namespace BuildAllScripts
 			try
 			{
 				var scriptResources = Resource.GetResourceFiles(scriptsCompletePath);
+                
 				var scriptBuildingResult = new ScriptResourcesBuilder().BuildAllScripts(scriptResources.ToArray(), _gamePath);
 				if (scriptBuildingResult.Succeded)
 				{
@@ -48,10 +49,7 @@ namespace BuildAllScripts
 			}
 		}
 
-
-
-
-		private static Assembly CurrentDomainOnAssemblyResolve(object sender, ResolveEventArgs args)
+        private static Assembly CurrentDomainOnAssemblyResolve(object sender, ResolveEventArgs args)
 		{
 
 			const string scriptingdll = "ScriptingPlugin.core";
