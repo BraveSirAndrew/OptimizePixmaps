@@ -15,20 +15,10 @@ namespace ConvertResourcesToBinary
 
 		static void Main(string[] args)
 		{
-			_directoryPath = args[0];
-			if(!DirectoryHelper.ExistsAndPathValid(_directoryPath))
-				return;
-
-			var dataPath = Path.Combine(_directoryPath, "Data");
-			if (!Directory.Exists(dataPath))
-			{
-				Console.WriteLine("Resources Directory {0} does not exists. Can't compile scripts", dataPath);
-				return;
-			}
 			try
 			{
 				LoadAllPlugins(_directoryPath);
-				var results = SerializationConverter.ConvertToBinary(dataPath);
+				var results = SerializationConverter.ConvertToBinary();
 				if (results.Succeded)
 					Console.WriteLine("Converted all resources to binary");
 				else
@@ -75,10 +65,12 @@ namespace ConvertResourcesToBinary
 
 	public static class SerializationConverter
 	{
-		public static Results ConvertToBinary(string path)
+		public static Results ConvertToBinary()
 		{
 			var errors = new List<string>();
-			
+
+			Resource.BlockAllInits = true;
+
 			DualityApp.Init(DualityApp.ExecutionEnvironment.Launcher);
 			Formatter.DefaultMethod = FormattingMethod.Binary;
 
@@ -105,6 +97,8 @@ namespace ConvertResourcesToBinary
 					errors.Add(string.Format("Error saving {0}:{1} {2} StackTrace: {3}",file, exception.Message, Environment.NewLine, exception.StackTrace));
 				}
 			}
+
+			DualityApp.Terminate();
 			return new Results {Succeded = !errors.Any(), Errors = errors.ToArray()};
 		}
 	}
