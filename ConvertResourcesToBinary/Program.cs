@@ -18,6 +18,7 @@ namespace ConvertResourcesToBinary
 			_directoryPath = args[0];
 			if(!DirectoryHelper.ExistsAndPathValid(_directoryPath))
 				return;
+
 			var dataPath = Path.Combine(_directoryPath, "Data");
 			if (!Directory.Exists(dataPath))
 			{
@@ -76,17 +77,28 @@ namespace ConvertResourcesToBinary
 	{
 		public static Results ConvertToBinary(string path)
 		{
-			Formatter.DefaultMethod = FormattingMethod.Binary;
 			var errors = new List<string>();
 			
-			var resFiles = Resource.GetResourceFiles(path);
+			DualityApp.Init(DualityApp.ExecutionEnvironment.Launcher);
+			Formatter.DefaultMethod = FormattingMethod.Binary;
+
+			DualityApp.LoadAppData();
+			DualityApp.LoadUserData();
+			DualityApp.LoadMetaData();
+
+			DualityApp.SaveAppData();
+			DualityApp.SaveUserData();
+			DualityApp.SaveMetaData();
+
+			var resFiles = Resource.GetResourceFiles();
 			foreach (var file in resFiles)
 			{
 				try
 				{
-					var contentRef = Resource.Load<Resource>(file,null,false);
+					var contentRef = Resource.Load<Resource>(file, null, false);
 					Console.WriteLine("Converting {0}",file);
 					contentRef.Save(null, false);
+					contentRef.Dispose();
 				}
 				catch (Exception exception)
 				{
