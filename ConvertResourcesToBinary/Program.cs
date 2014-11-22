@@ -41,7 +41,7 @@ namespace ConvertResourcesToBinary
 			{
 				var plugins = Directory.EnumerateFiles(Path.Combine(gamePath, "plugins"),"*.dll");
 
-				plugins = plugins.Except(new []{"spine-csharp","nvorbis"}, StringComparer.CurrentCultureIgnoreCase);
+                plugins = plugins.Except(new[] { "spine-csharp", "nvorbis", "CommunityExpressSW" }, StringComparer.CurrentCultureIgnoreCase);
 				var references = plugins.Where(x => !x.ToLower().Contains("fmod")).ToList();
 				foreach (var reference in references)
 				{
