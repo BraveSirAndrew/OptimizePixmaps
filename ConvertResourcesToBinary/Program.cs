@@ -17,7 +17,7 @@ namespace ConvertResourcesToBinary
 		{
 			try
 			{
-				LoadAllPlugins(_directoryPath);
+				//LoadAllPlugins(_directoryPath);
 				var results = SerializationConverter.ConvertToBinary();
 				if (results.Succeded)
 					Console.WriteLine("Converted all resources to binary");
