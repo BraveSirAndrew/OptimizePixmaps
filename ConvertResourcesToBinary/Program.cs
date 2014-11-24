@@ -36,7 +36,7 @@ namespace ConvertResourcesToBinary
 		}
 
 		private static void LoadAllPlugins(string gamePath)
-		{
+		{ 
 			try
 			{
 				var plugins = Directory.EnumerateFiles(Path.Combine(gamePath, "plugins"),"*.dll");
@@ -47,6 +47,7 @@ namespace ConvertResourcesToBinary
 				{
 					try
 					{
+                        Console.WriteLine("Loading assembly {0}", reference);
 						Assembly.LoadFile(reference);
 					}
 					catch (Exception e)
