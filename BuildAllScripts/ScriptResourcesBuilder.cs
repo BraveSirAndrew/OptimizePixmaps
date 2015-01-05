@@ -105,7 +105,8 @@ namespace BuildAllScripts
 											 !x.Name.ToLower().Contains("libtheoraplay") &&
 											 !x.Name.ToLower().Contains("libtheora") &&
 											 !x.Name.ToLower().Contains("libogg") &&
-											 !x.Name.ToLower().Contains("wrap_oal"))).ToList();
+											 !x.Name.ToLower().Contains("wrap_oal") &&
+											 !x.Name.ToLower().Contains("libmypaint"))).ToList();
 
             foreach (FileInfo fileInfo in references)
             {
