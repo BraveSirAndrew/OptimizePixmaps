@@ -44,6 +44,9 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\packages\Duality.0.1.194\lib\net40\Ionic.Zip.dll</HintPath>
     </Reference>
+    <Reference Include="LZ4">
+      <HintPath>..\packages\lz4net.1.0.5.93\lib\net40-client\LZ4.dll</HintPath>
+    </Reference>
     <Reference Include="ManagedSquish">
       <HintPath>..\packages\ManagedSquish.0.1.0.0\lib\net40\ManagedSquish.dll</HintPath>
     </Reference>
