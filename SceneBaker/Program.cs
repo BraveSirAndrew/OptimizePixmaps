@@ -1,4 +1,6 @@
-﻿using System.Linq;
+﻿using System;
+using System.Diagnostics;
+using System.Linq;
 using Duality;
 using Duality.Resources;
 using HonourBound.Editor.LayerEditorTools;
@@ -12,6 +14,8 @@ namespace SceneBaker
 	{
 		static void Main(string[] args)
 		{
+			var sw = Stopwatch.StartNew();
+
 			System.Threading.Thread.CurrentThread.CurrentCulture = System.Globalization.CultureInfo.InvariantCulture;
 			System.Threading.Thread.CurrentThread.CurrentUICulture = System.Globalization.CultureInfo.InvariantCulture;
 
@@ -34,6 +38,8 @@ namespace SceneBaker
 				Bake();
 			}
 			DualityApp.Terminate();
+
+			Console.WriteLine("All levels baked in " + sw.Elapsed.TotalSeconds + " seconds. Delicious!");
 		}
 
 		private static void Bake()
