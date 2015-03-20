@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Diagnostics;
+using System.Globalization;
 using System.Linq;
+using System.Threading;
 using Duality;
 using Duality.Resources;
 using HonourBound.Editor.LayerEditorTools;
@@ -14,32 +16,40 @@ namespace SceneBaker
 	{
 		static void Main(string[] args)
 		{
-			var sw = Stopwatch.StartNew();
-
-			System.Threading.Thread.CurrentThread.CurrentCulture = System.Globalization.CultureInfo.InvariantCulture;
-			System.Threading.Thread.CurrentThread.CurrentUICulture = System.Globalization.CultureInfo.InvariantCulture;
-
-			DualityApp.Init(DualityApp.ExecutionEnvironment.Launcher, DualityApp.ExecutionContext.Editor);
-
-			using (var launcherWindow = new HeadlessWindow(
-				DualityApp.UserData.GfxWidth,
-				DualityApp.UserData.GfxHeight,
-				DualityApp.DefaultMode,
-				DualityApp.AppData.AppName,
-				GameWindowFlags.Default))
+			try
 			{
-				// Initialize default content
-				launcherWindow.MakeCurrent();
+				var sw = Stopwatch.StartNew();
+
+				Thread.CurrentThread.CurrentCulture = CultureInfo.InvariantCulture;
+				Thread.CurrentThread.CurrentUICulture = CultureInfo.InvariantCulture;
+
+				DualityApp.Init(DualityApp.ExecutionEnvironment.Launcher, DualityApp.ExecutionContext.Editor);
+
+				using (var launcherWindow = new HeadlessWindow(
+					DualityApp.UserData.GfxWidth,
+					DualityApp.UserData.GfxHeight,
+					DualityApp.DefaultMode,
+					DualityApp.AppData.AppName,
+					GameWindowFlags.Default))
+				{
+					// Initialize default content
+					launcherWindow.MakeCurrent();
 				
-				DualityApp.TargetResolution = new Vector2(launcherWindow.Width, launcherWindow.Height);
-				DualityApp.TargetMode = launcherWindow.Context.GraphicsMode;
-				ContentProvider.InitDefaultContent();
+					DualityApp.TargetResolution = new Vector2(launcherWindow.Width, launcherWindow.Height);
+					DualityApp.TargetMode = launcherWindow.Context.GraphicsMode;
+					ContentProvider.InitDefaultContent();
 
-				Bake();
+					Bake();
+				}
+				DualityApp.Terminate();
+
+				Console.WriteLine("All levels baked in " + sw.Elapsed.TotalSeconds + " seconds. Delicious!");
 			}
-			DualityApp.Terminate();
-
-			Console.WriteLine("All levels baked in " + sw.Elapsed.TotalSeconds + " seconds. Delicious!");
+			catch (Exception exception)
+			{
+				Console.WriteLine("An error ocurred: {0} {1} {2}", exception.Message, Environment.NewLine, exception.StackTrace);
+				Environment.Exit(-1);
+			}
 		}
 
 		private static void Bake()
