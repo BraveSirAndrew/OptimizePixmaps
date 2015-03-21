@@ -24,8 +24,11 @@ namespace SceneBaker
 				Thread.CurrentThread.CurrentCulture = CultureInfo.InvariantCulture;
 				Thread.CurrentThread.CurrentUICulture = CultureInfo.InvariantCulture;
 
+				if(Log.Editor.Outputs.Any(o => o is ConsoleLogOutput) == false)
+					Log.Editor.AddOutput(new ConsoleLogOutput());
+				
 				DualityApp.Init(DualityApp.ExecutionEnvironment.Launcher, DualityApp.ExecutionContext.Editor);
-
+				
 				using (var launcherWindow = new HeadlessWindow(
 					DualityApp.UserData.GfxWidth,
 					DualityApp.UserData.GfxHeight,
