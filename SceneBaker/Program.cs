@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Diagnostics;
 using System.Globalization;
+using System.IO;
 using System.Linq;
 using System.Threading;
 using Duality;
@@ -74,7 +75,9 @@ namespace SceneBaker
 		{
 			var renderTexture = new Texture(2048, 2048, filterMin: TextureMinFilter.Linear);
 			var renderTarget = new RenderTarget(AAQuality.Off, new[] {new ContentRef<Texture>(renderTexture)});
-			var scenes = ContentProvider.GetAvailableContent(typeof (Scene)).Select(s => (Scene) s.Res);
+			var scenes = ContentProvider.GetAvailableContent(typeof (Scene))
+				.Where(s => Path.GetDirectoryName(s.Path) == "Data\\Scenes")
+				.Select(s => (Scene) s.Res);
 
 			foreach (var scene in scenes)
 			{
