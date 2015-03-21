@@ -26,6 +26,12 @@ namespace SceneBaker
 
 				if(Log.Editor.Outputs.Any(o => o is ConsoleLogOutput) == false)
 					Log.Editor.AddOutput(new ConsoleLogOutput());
+
+				if (Log.Core.Outputs.Any(o => o is ConsoleLogOutput) == false)
+					Log.Core.AddOutput(new ConsoleLogOutput());
+
+				if (Log.Game.Outputs.Any(o => o is ConsoleLogOutput) == false)
+					Log.Game.AddOutput(new ConsoleLogOutput());
 				
 				DualityApp.Init(DualityApp.ExecutionEnvironment.Launcher, DualityApp.ExecutionContext.Editor);
 				
@@ -38,6 +44,14 @@ namespace SceneBaker
 				{
 					// Initialize default content
 					launcherWindow.MakeCurrent();
+
+					Log.Core.Write("OpenGL initialized");
+					Log.Core.PushIndent();
+					Log.Editor.Write("Vendor: {0}", GL.GetString(StringName.Vendor));
+					Log.Editor.Write("Version: {0}", GL.GetString(StringName.Version));
+					Log.Editor.Write("Renderer: {0}", GL.GetString(StringName.Renderer));
+					Log.Editor.Write("Shading language version: {0}", GL.GetString(StringName.ShadingLanguageVersion));
+					Log.Core.PopIndent();
 				
 					DualityApp.TargetResolution = new Vector2(launcherWindow.Width, launcherWindow.Height);
 					DualityApp.TargetMode = launcherWindow.Context.GraphicsMode;
