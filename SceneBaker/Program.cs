@@ -18,8 +18,9 @@ namespace SceneBaker
 		{
 			try
 			{
+				
 				var sw = Stopwatch.StartNew();
-
+				Console.WriteLine("In SceneBaker started process");
 				Thread.CurrentThread.CurrentCulture = CultureInfo.InvariantCulture;
 				Thread.CurrentThread.CurrentUICulture = CultureInfo.InvariantCulture;
 
