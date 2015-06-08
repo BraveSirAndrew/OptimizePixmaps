@@ -71,6 +71,7 @@ namespace ConvertResourcesToBinary
 			var errors = new List<string>();
 
 			Resource.BlockAllInits = true;
+			Resource.CompressOnSave = true;
 
 			DualityApp.Init(DualityApp.ExecutionEnvironment.Launcher);
 			Formatter.DefaultMethod = FormattingMethod.Binary;
