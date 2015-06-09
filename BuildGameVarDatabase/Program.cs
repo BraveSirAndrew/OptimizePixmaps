@@ -47,10 +47,11 @@ namespace BuildGameVarDatabase
 				if (res.Res == null || (res.Res is IGameVar) == false)
 					continue;
 
+				var variablePath = res.Res.FullName.Replace(_gamePath, "").TrimStart('\\');
 				if (res.Res is IntGameVarResource)
-					database.Res.AddGameVar(res.Res.FullName, ((IntGameVarResource) res.Res).Value);
+					database.Res.AddGameVar(variablePath, ((IntGameVarResource) res.Res).Value);
 				else if (res.Res is FloatGameVarResource)
-					database.Res.AddGameVar(res.Res.FullName, ((FloatGameVarResource) res.Res).Value);
+					database.Res.AddGameVar(variablePath, ((FloatGameVarResource) res.Res).Value);
 			}
 
 			database.Res.Save();
