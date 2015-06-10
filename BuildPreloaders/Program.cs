@@ -23,15 +23,13 @@ namespace BuildPreloaders
 			if (args.Length > 0)
 				_gamePath = args[0];
 			if (!DirectoryHelper.ExistsAndPathValid(_gamePath))
-				return;
+				Environment.Exit(-1);
 
 			Assembly.LoadFrom(Path.Combine(_gamePath, "Mercury.ParticleEngine.dll"));
 			Assembly.LoadFrom(Path.Combine(_gamePath, "sharppaint.dll"));		// not sure why we need this but we do :(
 			Assembly.LoadFrom(Path.Combine(_gamePath, "Plugins\\ScriptingPlugin.core.dll"));
 			Assembly.LoadFrom(Path.Combine(_gamePath, "Plugins\\ScriptingCSCorePlugin.core.dll"));
 			Assembly.LoadFrom(Path.Combine(_gamePath, "Plugins\\ScriptingFSCorePlugin.core.dll"));
-
-			LoadAllPlugins(_gamePath);
 
 			try
 			{
@@ -40,6 +38,7 @@ namespace BuildPreloaders
 			catch (Exception e)
 			{
 				Console.WriteLine("Something went wrong while building preloaders. The error was:\n{0}", e.Message);
+				Environment.Exit(-1);
 			}
 		}
 
@@ -86,33 +85,6 @@ namespace BuildPreloaders
 					}
 				}
 				packResource.Save(Path.Combine(_gamePath, "Data\\Scenes", scene.Name + ".PackResource.res"));
-			}
-		}
-
-		private static void LoadAllPlugins(string gamePath)
-		{
-			try
-			{
-				var plugins = Directory.EnumerateFiles(Path.Combine(gamePath, "plugins"), "*.dll");
-
-				plugins = plugins.Except(new[] { "spine-csharp", "nvorbis", "CommunityExpress" }, StringComparer.CurrentCultureIgnoreCase);
-				var references = plugins.Where(x => !x.ToLower().Contains("fmod")).ToList();
-				foreach (var reference in references)
-				{
-					try
-					{
-						Console.WriteLine("Loading assembly {0}", reference);
-						Assembly.Load(reference);
-					}
-					catch (Exception e)
-					{
-						Console.WriteLine(e);
-					}
-				}
-			}
-			catch (Exception exception)
-			{
-				Console.WriteLine("Error: {0}.{1} {2} ", exception.Message, Environment.NewLine, exception.StackTrace);
 			}
 		}
 
