@@ -33,7 +33,14 @@ namespace BuildPreloaders
 
 			LoadAllPlugins(_gamePath);
 
-			PackLevels();
+			try
+			{
+				PackLevels();
+			}
+			catch (Exception e)
+			{
+				Console.WriteLine("Something went wrong while building preloaders. The error was:\n{0}", e.Message);
+			}
 		}
 
 		private static void PackLevels()
@@ -67,6 +74,11 @@ namespace BuildPreloaders
 				var packResource = new PackResource();
 				foreach (var contentRef in resourcesUsedByScene)
 				{
+					// don't include render targets, or we might end up reloading render target textures while the preloader is using them,
+					// which makes everything turn white!
+					if (contentRef.FullName.Contains("RenderTargets"))
+						continue;
+
 					using (var stream = new MemoryStream())
 					{
 						contentRef.Res.Save(stream);
