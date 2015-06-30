@@ -31,18 +31,22 @@ namespace BuildPreloaders
 			Assembly.LoadFrom(Path.Combine(_gamePath, "Plugins\\ScriptingCSCorePlugin.core.dll"));
 			Assembly.LoadFrom(Path.Combine(_gamePath, "Plugins\\ScriptingFSCorePlugin.core.dll"));
 
+			var success = false;
 			try
 			{
-				PackLevels();
+				success = PackLevels();
 			}
 			catch (Exception e)
 			{
 				Console.WriteLine("Something went wrong while building preloaders. The error was:\n{0}", e.Message);
 				Environment.Exit(-1);
 			}
+
+			if (success == false)
+				Environment.Exit(-1);
 		}
 
-		private static void PackLevels()
+		private static bool PackLevels()
 		{
 			Resource.BlockAllInits = true;
 			
@@ -86,15 +90,16 @@ namespace BuildPreloaders
 				}
 				packResource.Save(Path.Combine(_gamePath, "Data\\Scenes", scene.Name + ".PackResource.res"));
 			}
+
+			DualityApp.Terminate();
+
+			return true;
 		}
 
 		private static Assembly OnAssemblyResolve(object sender, ResolveEventArgs args)
 		{
 			if (args.Name.ToLower().Contains("gameplugin.core"))
 				return Assembly.LoadFrom(Path.Combine(_gamePath, "Plugins\\GamePlugin.core.dll"));
-
-			if (args.Name.ToLower().Contains("lz4"))
-				return Assembly.LoadFrom(Path.Combine(_gamePath, "lz4.dll"));
 
 			return null;
 		}

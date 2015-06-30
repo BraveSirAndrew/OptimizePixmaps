@@ -66,7 +66,7 @@ namespace SceneBaker
 			}
 			catch (Exception exception)
 			{
-				Console.WriteLine("An error ocurred: {0} {1} {2}", exception.Message, Environment.NewLine, exception.StackTrace);
+				Console.WriteLine("Something went wrong while baking scenes: {0} {1} {2}", exception.Message, Environment.NewLine, exception.StackTrace);
 				Environment.Exit(-1);
 			}
 		}
