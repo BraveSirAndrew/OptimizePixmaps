@@ -46,13 +46,21 @@ namespace SceneBaker
 					// Initialize default content
 					launcherWindow.MakeCurrent();
 
+					var renderer = GL.GetString(StringName.Renderer);
+
 					Log.Core.Write("OpenGL initialized");
 					Log.Core.PushIndent();
 					Log.Editor.Write("Vendor: {0}", GL.GetString(StringName.Vendor));
 					Log.Editor.Write("Version: {0}", GL.GetString(StringName.Version));
-					Log.Editor.Write("Renderer: {0}", GL.GetString(StringName.Renderer));
+					Log.Editor.Write("Renderer: {0}", renderer);
 					Log.Editor.Write("Shading language version: {0}", GL.GetString(StringName.ShadingLanguageVersion));
 					Log.Core.PopIndent();
+
+					if (renderer == "GDI Generic")
+					{
+						Log.Core.WriteError("Couldn't run the scene baker because the graphics card was reported as GDI Generic. Make sure the build agent is running as the logged on user and try again");
+						Environment.Exit(-1);
+					}
 				
 					DualityApp.TargetResolution = new Vector2(launcherWindow.Width, launcherWindow.Height);
 					DualityApp.TargetMode = launcherWindow.Context.GraphicsMode;
