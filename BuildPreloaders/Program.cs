@@ -59,6 +59,7 @@ namespace BuildPreloaders
 				"imafuku",
 				"tengu-city",
 				"hirumos-return",
+				"hirumos-return-boss",
 				"earth-clan-city",
 				"Yomi",
 				"yomi-castle"
