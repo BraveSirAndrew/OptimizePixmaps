@@ -83,6 +83,11 @@ namespace BuildPreloaders
 					if (contentRef.FullName.Contains("RenderTargets"))
 						continue;
 
+					// we don't want to serialize the player progression resource, otherwise it gets loaded as part of the preloader, which
+					// means we never get a chance to save over the default player progression on starting a new game.
+					if (contentRef.FullName.Contains("PlayerProgressionResource"))
+						continue;
+
 					using (var stream = new MemoryStream())
 					{
 						contentRef.Res.Save(stream);
