@@ -52,6 +52,8 @@ namespace BuildGameVarDatabase
 					database.Res.AddGameVar(variablePath, ((IntGameVarResource) res.Res).Value);
 				else if (res.Res is FloatGameVarResource)
 					database.Res.AddGameVar(variablePath, ((FloatGameVarResource) res.Res).Value);
+				else if (res.Res is ColourGameVarResource)
+					database.Res.AddGameVar(variablePath, ((ColourGameVarResource)res.Res).Value);
 			}
 
 			database.Res.Save();
