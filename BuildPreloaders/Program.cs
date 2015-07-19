@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
+using System.IO.Compression;
 using System.Linq;
 using System.Reflection;
 using Duality;
@@ -75,26 +76,35 @@ namespace BuildPreloaders
 				}
 				ReflectionHelper.VisitObjectsDeep(scene.Res, FindContentRefs(resourcesUsedByScene), false);
 
-				var packResource = new PackResource();
-				foreach (var contentRef in resourcesUsedByScene)
+				using(var fileStream = new FileStream(Path.Combine(_gamePath, "levels\\", scene.Name + ".pack"), FileMode.Create))
+				using (var zipArchive = new ZipArchive(fileStream, ZipArchiveMode.Create))
 				{
-					// don't include render targets, or we might end up reloading render target textures while the preloader is using them,
-					// which makes everything turn white!
-					if (contentRef.FullName.Contains("RenderTargets"))
-						continue;
-
-					// we don't want to serialize the player progression resource, otherwise it gets loaded as part of the preloader, which
-					// means we never get a chance to save over the default player progression on starting a new game.
-					if (contentRef.FullName.Contains("PlayerProgressionResource"))
-						continue;
-
-					using (var stream = new MemoryStream())
+					foreach (var contentRef in resourcesUsedByScene)
 					{
-						contentRef.Res.Save(stream);
-						packResource.AddResource(contentRef.Path, stream.ToArray());
+						// don't include render targets, or we might end up reloading render target textures while the preloader is using them,
+						// which makes everything turn white!
+						if (contentRef.FullName.Contains("RenderTargets"))
+							continue;
+
+						// we don't want to serialize the player progression resource, otherwise it gets loaded as part of the preloader, which
+						// means we never get a chance to save over the default player progression on starting a new game.
+						if (contentRef.FullName.Contains("PlayerProgressionResource"))
+							continue;
+
+						using (var stream = new MemoryStream())
+						{
+							contentRef.Res.Save(stream);
+							stream.Seek(0, SeekOrigin.Begin);
+
+							var entry = zipArchive.CreateEntry(contentRef.Path);
+							using (var entryStream = entry.Open())
+							{
+								var buffer = stream.ToArray();
+								entryStream.Write(buffer, 0, buffer.Length);
+							}
+						}
 					}
 				}
-				packResource.Save(Path.Combine(_gamePath, "Data\\Scenes", scene.Name + ".PackResource.res"));
 			}
 
 			DualityApp.Terminate();
