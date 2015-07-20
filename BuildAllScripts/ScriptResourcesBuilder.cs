@@ -6,6 +6,8 @@ using System.Linq;
 using System.Xml.Linq;
 using Duality;
 using ScriptingPlugin;
+using ScriptingPlugin.CSharp;
+using ScriptingPlugin.FSharp;
 using ScriptingPlugin.Resources;
 using UtilsAndResources;
 
@@ -75,7 +77,7 @@ namespace BuildAllScripts
 				}
 			}
             if(!scriptsForCompiling.Any())
-                return new FSharpScriptCompilerResults(new string[0],null, null);
+				return new ScriptCompilerResults(false, Enumerable.Empty<string>(), "");
 			var compiler = CreateCompilerWithReferences<TCompiler>(gamePath);
 
 			return compiler.Compile(scriptsForCompiling, resultingAssemblyDirectory);
