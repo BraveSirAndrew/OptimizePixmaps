@@ -38,7 +38,7 @@ namespace OptimizePixmaps.Tests
 			Program.Main();
 
 			var loadedPixmap = ContentProvider.RequestContent<Pixmap>(path).Res;
-			Assert.AreEqual(100, loadedPixmap.PixelData[1].Data.Length);
+			Assert.AreEqual(100, loadedPixmap.PixelData[1].ImageSize);
 		}
 
 		[Test]
