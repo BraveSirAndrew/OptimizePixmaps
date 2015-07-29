@@ -130,7 +130,11 @@ namespace BuildPreloaders
 				if (r.FullName.Contains("PlayerProgressionResource"))
 					return r;
 
-				Log.Editor.Write("Adding '{0}'", r.Res.Name);
+				// we don't want scripts in here either
+				if (r.Path.StartsWith("Data\\Scripts"))
+					return r;
+
+				Log.Editor.Write("Adding '{0}'", r);
 				resourcesUsedByScene.Add(r);
 
 				if (r.Is<Prefab>())
@@ -144,6 +148,14 @@ namespace BuildPreloaders
 					{
 						Log.Editor.WriteError("Failed to load prefab '{0}'", r.Res);
 					}
+				}
+				else if(r.Is<Material>())
+				{
+					ReflectionHelper.VisitObjectsDeep(((Material)r.Res).Textures, FindContentRefs(resourcesUsedByScene), false);
+				}
+				else if (r.Is<Texture>())
+				{
+					ReflectionHelper.VisitObjectsDeep(((Texture)r.Res).BasePixmap, FindContentRefs(resourcesUsedByScene), false);
 				}
 				return r;
 			};
