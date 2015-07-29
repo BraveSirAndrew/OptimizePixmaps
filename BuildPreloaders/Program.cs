@@ -81,16 +81,6 @@ namespace BuildPreloaders
 				{
 					foreach (var contentRef in resourcesUsedByScene)
 					{
-						// don't include render targets, or we might end up reloading render target textures while the preloader is using them,
-						// which makes everything turn white!
-						if (contentRef.FullName.Contains("RenderTargets"))
-							continue;
-
-						// we don't want to serialize the player progression resource, otherwise it gets loaded as part of the preloader, which
-						// means we never get a chance to save over the default player progression on starting a new game.
-						if (contentRef.FullName.Contains("PlayerProgressionResource"))
-							continue;
-
 						using (var stream = new MemoryStream())
 						{
 							contentRef.Res.Save(stream);
@@ -128,6 +118,16 @@ namespace BuildPreloaders
 					return r;
 
 				if (resourcesUsedByScene.Contains(r))
+					return r;
+
+				// don't include render targets, or we might end up reloading render target textures while the preloader is using them,
+				// which makes everything turn white!
+				if (r.FullName.Contains("RenderTargets"))
+					return r;
+
+				// we don't want to serialize the player progression resource, otherwise it gets loaded as part of the preloader, which
+				// means we never get a chance to save over the default player progression on starting a new game.
+				if (r.FullName.Contains("PlayerProgressionResource"))
 					return r;
 
 				Log.Editor.Write("Adding '{0}'", r.Res.Name);
