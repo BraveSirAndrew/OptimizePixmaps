@@ -80,17 +80,17 @@
     <Reference Include="LZ4">
       <HintPath>..\packages\lz4net.1.0.5.93\lib\net40-client\LZ4.dll</HintPath>
     </Reference>
-    <Reference Include="ManagedSquish, Version=2.0.0.0, Culture=neutral, PublicKeyToken=fac8b2bfeda84eab, processorArchitecture=MSIL">
+    <Reference Include="ManagedSquish, Version=0.1.0.0, Culture=neutral, PublicKeyToken=fac8b2bfeda84eab, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\packages\ManagedSquish.2.0.0.0\lib\net40\ManagedSquish.dll</HintPath>
+      <HintPath>..\packages\ManagedSquish.0.1.0.0\lib\net40\ManagedSquish.dll</HintPath>
     </Reference>
-    <Reference Include="NativeSquish_x64, Version=2.0.0.0, Culture=neutral, PublicKeyToken=fac8b2bfeda84eab, processorArchitecture=AMD64">
+    <Reference Include="NativeSquish_x64, Version=0.1.0.0, Culture=neutral, PublicKeyToken=fac8b2bfeda84eab, processorArchitecture=AMD64">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\packages\ManagedSquish.2.0.0.0\lib\net40\NativeSquish_x64.dll</HintPath>
+      <HintPath>..\packages\ManagedSquish.0.1.0.0\lib\net40\NativeSquish_x64.dll</HintPath>
     </Reference>
-    <Reference Include="NativeSquish_x86, Version=2.0.0.0, Culture=neutral, PublicKeyToken=fac8b2bfeda84eab, processorArchitecture=x86">
+    <Reference Include="NativeSquish_x86, Version=0.1.0.0, Culture=neutral, PublicKeyToken=fac8b2bfeda84eab, processorArchitecture=x86">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\packages\ManagedSquish.2.0.0.0\lib\net40\NativeSquish_x86.dll</HintPath>
+      <HintPath>..\packages\ManagedSquish.0.1.0.0\lib\net40\NativeSquish_x86.dll</HintPath>
     </Reference>
     <Reference Include="ObjectInspector.editor, Version=1.0.5689.18638, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
