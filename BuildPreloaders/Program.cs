@@ -7,7 +7,6 @@ using System.Reflection;
 using Duality;
 using Duality.Resources;
 using Duality.Serialization;
-using HonourBound.Resources;
 using UtilsAndResources;
 
 namespace BuildPreloaders
@@ -56,6 +55,7 @@ namespace BuildPreloaders
 
 			var scenes = new List<string>
 			{
+				"front-end",
 				"samurai-village",
 				"imafuku",
 				"tengu-city",
@@ -69,18 +69,55 @@ namespace BuildPreloaders
 			foreach (var sceneName in scenes)
 			{
 				var resourcesUsedByScene = new HashSet<IContentRef>();
-				var scene = ContentProvider.RequestContent<Scene>(Path.Combine(_gamePath, "Data\\Scenes", sceneName + ".Scene.res"));
-				if (scene.Res == null)
-				{
-					Console.WriteLine("Couldn't load scene '{0}'", sceneName);
-				}
-				ReflectionHelper.VisitObjectsDeep(scene.Res, FindContentRefs(resourcesUsedByScene), false);
 
-				using(var fileStream = new FileStream(Path.Combine(_gamePath, "levels\\", scene.Name + ".pack"), FileMode.Create))
-				using (var zipArchive = new ZipArchive(fileStream, ZipArchiveMode.Create))
+				var preloadFile = Path.Combine(_gamePath, "preloaders", sceneName + "-preload-info.txt");
+				if (File.Exists(preloadFile) == false)
 				{
-					foreach (var contentRef in resourcesUsedByScene)
+					Console.WriteLine("Couldn't find a preloader file for " + sceneName + ". No preloader will be available for that level.");
+					continue;
+				}
+
+				var resources = File.ReadAllText(preloadFile).Split(new []{Environment.NewLine}, StringSplitOptions.RemoveEmptyEntries);
+				foreach (var resource in resources)
+				{
+					if (resource.ToLower().Contains("rendertargets") ||
+						resource.ToLower().Contains("playerprogressionresource") ||
+						resource.ToLower().Contains("Data\\Scripts"))
+						continue;
+					
+					resourcesUsedByScene.Add(ContentProvider.RequestContent(resource));
+				}
+
+				using(var fileStream = new FileStream(Path.Combine(_gamePath, "levels\\", sceneName + ".pack"), FileMode.Create))
+				using (var zipArchive = new ZipArchive(fileStream, ZipArchiveMode.Create))
+				using(var texFileStream = new FileStream(Path.Combine(_gamePath, "levels\\", sceneName + ".tex"), FileMode.Create))
+				using (var textureZipArchive = new ZipArchive(texFileStream, ZipArchiveMode.Create))
+				{
+					foreach (var contentRef in resourcesUsedByScene.OrderBy(OrderByType))
 					{
+						if (contentRef.Is<Pixmap>())
+							continue;
+
+						if (contentRef.Is<Texture>() && contentRef.Name.ToLower().Contains("rendertarget") == false)
+						{
+							var entry = textureZipArchive.CreateEntry(contentRef.Path);
+							var texture = contentRef.As<Texture>().Res;
+							using (var entryStream = entry.Open())
+							{
+								var pixmap = texture.BasePixmap.Res;
+
+								entryStream.Write(BitConverter.GetBytes(pixmap.ProcessedLayer.Width), 0, 4);
+								entryStream.Write(BitConverter.GetBytes(pixmap.ProcessedLayer.Height), 0, 4);
+
+								if (pixmap.ProcessedLayer.IsCompressed)
+									entryStream.Write(pixmap.ProcessedLayer.CompressedData, 0, pixmap.ProcessedLayer.CompressedImageSize);
+								else
+									entryStream.Write(pixmap.ProcessedLayer.GetPixelDataByteRgba(), 0, pixmap.ProcessedLayer.ImageSize);
+							}
+
+							texture.UseExternalPixelData = true;
+						}
+
 						using (var stream = new MemoryStream())
 						{
 							contentRef.Res.Save(stream);
@@ -102,63 +139,25 @@ namespace BuildPreloaders
 			return true;
 		}
 
+		/// <summary>
+		/// Make sure textures are loaded first
+		/// </summary>
+		/// <param name="arg"></param>
+		/// <returns></returns>
+		private static object OrderByType(IContentRef arg)
+		{
+			if (arg.Is<Texture>())
+				return 0;
+
+			return 1;
+		}
+
 		private static Assembly OnAssemblyResolve(object sender, ResolveEventArgs args)
 		{
 			if (args.Name.ToLower().Contains("gameplugin.core"))
 				return Assembly.LoadFrom(Path.Combine(_gamePath, "Plugins\\GamePlugin.core.dll"));
 
 			return null;
-		}
-
-		private static Func<IContentRef, IContentRef> FindContentRefs(HashSet<IContentRef> resourcesUsedByScene)
-		{
-			return r =>
-			{
-				if (r.Res == null)
-					return r;
-
-				if (resourcesUsedByScene.Contains(r))
-					return r;
-
-				// don't include render targets, or we might end up reloading render target textures while the preloader is using them,
-				// which makes everything turn white!
-				if (r.FullName.Contains("RenderTargets"))
-					return r;
-
-				// we don't want to serialize the player progression resource, otherwise it gets loaded as part of the preloader, which
-				// means we never get a chance to save over the default player progression on starting a new game.
-				if (r.FullName.Contains("PlayerProgressionResource"))
-					return r;
-
-				// we don't want scripts in here either
-				if (r.Path.StartsWith("Data\\Scripts"))
-					return r;
-
-				Log.Editor.Write("Adding '{0}'", r);
-				resourcesUsedByScene.Add(r);
-
-				if (r.Is<Prefab>())
-				{
-					try
-					{
-						var instance = ((Prefab)r.Res).Instantiate();
-						ReflectionHelper.VisitObjectsDeep(instance, FindContentRefs(resourcesUsedByScene), false);
-					}
-					catch (Exception e)
-					{
-						Log.Editor.WriteError("Failed to load prefab '{0}'", r.Res);
-					}
-				}
-				else if(r.Is<Material>())
-				{
-					ReflectionHelper.VisitObjectsDeep(((Material)r.Res).Textures, FindContentRefs(resourcesUsedByScene), false);
-				}
-				else if (r.Is<Texture>())
-				{
-					ReflectionHelper.VisitObjectsDeep(((Texture)r.Res).BasePixmap, FindContentRefs(resourcesUsedByScene), false);
-				}
-				return r;
-			};
 		}
 	}
 }
