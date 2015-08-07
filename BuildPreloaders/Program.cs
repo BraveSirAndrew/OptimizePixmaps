@@ -95,6 +95,12 @@ namespace BuildPreloaders
 				{
 					foreach (var contentRef in resourcesUsedByScene.OrderBy(OrderByType))
 					{
+						if (contentRef.IsAvailable == false)
+						{
+							Log.Game.WriteWarning("{0} could not be loaded. It's possible the resource is listed in the preloader file but has been deleted. Skipping...", contentRef);
+							continue;
+						}
+
 						if (contentRef.Is<Pixmap>())
 							continue;
 
