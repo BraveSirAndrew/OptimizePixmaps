@@ -75,6 +75,7 @@ namespace SceneBaker
 			catch (Exception exception)
 			{
 				Console.WriteLine("Something went wrong while baking scenes: {0} {1} {2}", exception.Message, Environment.NewLine, exception.StackTrace);
+				DualityApp.Terminate();
 				Environment.Exit(-1);
 			}
 		}
