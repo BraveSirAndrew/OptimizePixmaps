@@ -80,9 +80,11 @@ namespace BuildPreloaders
 				var resources = File.ReadAllText(preloadFile).Split(new []{Environment.NewLine}, StringSplitOptions.RemoveEmptyEntries);
 				foreach (var resource in resources)
 				{
-					if (resource.ToLower().Contains("rendertargets") ||
-						resource.ToLower().Contains("playerprogressionresource") ||
-						resource.ToLower().Contains("Data\\Scripts"))
+					var resName = resource.ToLower();
+					if (resName.Contains("rendertargets") ||
+						resName.Contains("playerprogressionresource") ||
+						resName.Contains("unlockablemove") ||
+						resName.Contains("Data\\Scripts"))
 						continue;
 					
 					resourcesUsedByScene.Add(ContentProvider.RequestContent(resource));
