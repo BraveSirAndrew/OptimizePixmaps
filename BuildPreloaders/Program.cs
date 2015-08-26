@@ -14,6 +14,13 @@ namespace BuildPreloaders
 	class Program
 	{
 		private static string _gamePath;
+		private static List<string> _excludedTextures = new List<string>
+		{
+			@"Data\Textures\Common\effects\cloud.Texture.res",
+			@"Data\Textures\Common\effects\lava\lavatile.Texture.res",
+			@"Data\Textures\Common\effects\atmospherics\wind.Texture.res",
+			@"Data\Textures\Common\effects\atmospherics\clouds.Texture.res",
+		};
 
 		static void Main(string[] args)
 		{
@@ -106,7 +113,7 @@ namespace BuildPreloaders
 						if (contentRef.Is<Pixmap>())
 							continue;
 
-						if (contentRef.Is<Texture>() && contentRef.Name.ToLower().Contains("rendertarget") == false)
+						if (contentRef.Is<Texture>() && contentRef.Name.ToLower().Contains("rendertarget") == false && IsExcluded(contentRef) == false)
 						{
 							var entry = textureZipArchive.CreateEntry(contentRef.Path);
 							var texture = contentRef.As<Texture>().Res;
@@ -145,6 +152,16 @@ namespace BuildPreloaders
 			DualityApp.Terminate();
 
 			return true;
+		}
+
+		/// <summary>
+		/// Some textures don't work when loaded through the preloader like this, but we don't know why, so just exclude those for now.
+		/// </summary>
+		/// <param name="contentRef"></param>
+		/// <returns></returns>
+		private static bool IsExcluded(IContentRef contentRef)
+		{
+			return _excludedTextures.Contains(contentRef.Path);
 		}
 
 		/// <summary>
