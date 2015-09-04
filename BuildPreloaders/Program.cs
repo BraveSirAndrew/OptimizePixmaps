@@ -70,7 +70,8 @@ namespace BuildPreloaders
 				"hirumos-return-boss",
 				"earth-clan-city",
 				"Yomi",
-				"yomi-castle"
+				"yomi-castle",
+				"challenge-arena"
 			};
 
 			foreach (var sceneName in scenes)
